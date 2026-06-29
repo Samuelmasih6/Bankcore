@@ -15,7 +15,7 @@ jobs:
                 image: postgres:12
                 env:
                     POSTGRES_USER: root
-                    POSTGRES_PASSWORD: secret
+                    POSTGRES_PASSWORD: secretpass
                     POSTGRES_DB: bankcore
                 ports:
                     - 5432:5432
