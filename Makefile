@@ -1,6 +1,3 @@
--include .env
-export
-
 postgres:
 	docker run --name postgres12 \
 	-p 5432:5432 \
