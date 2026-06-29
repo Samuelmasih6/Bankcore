@@ -117,7 +117,7 @@ func TestTransferTx(t *testing.T) {
 
 		require.Equal(t, diff1, diff2)
 		require.True(t, diff1 > 0)
-		require.Equal(t, 0, diff1%amount)
+		require.Equal(t, int64(0), diff1%amount)
 
 		k := int(diff1 / amount)
 
