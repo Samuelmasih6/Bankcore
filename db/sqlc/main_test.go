@@ -6,22 +6,23 @@ import (
 	"os"
 	"testing"
 
+	"github.com/Samuelmasih6/Bankcore/util"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/joho/godotenv"
+	//"github.com/joho/godotenv"
 )
 
 var testQueries *Queries
 var testDB *pgxpool.Pool
 
 func TestMain(m *testing.M) {
-	err := godotenv.Load("../../.env")
+	config, err := util.LoadConfig("../..")
 	if err != nil {
-		log.Println("No .env file found")
+		log.Println("cannot load config: ", err)
 	}
 
-	dbSource := os.Getenv("DB_SOURCE")
+	//dbSource := os.Getenv("DB_SOURCE")
 
-	testDB, err = pgxpool.New(context.Background(), dbSource)
+	testDB, err = pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
