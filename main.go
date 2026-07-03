@@ -3,31 +3,34 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
-	"Bankcore/api"
-	db "Bankcore/db/sqlc"
+	"github.com/Samuelmasih6/Bankcore/api"
+	"github.com/Samuelmasih6/Bankcore/util"
+
+	db "github.com/Samuelmasih6/Bankcore/db/sqlc"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/joho/godotenv"
+	//"github.com/joho/godotenv"
 )
-
-const serverAddress = "0.0.0.0:8080"
 
 func main() {
 	// Load environment variables
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Println("No .env file found")
-	}
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	log.Println("No .env file found")
+	// }
 
-	dbSource := os.Getenv("DB_SOURCE")
-	if dbSource == "" {
-		log.Fatal("DB_SOURCE is not set")
+	// dbSource := os.Getenv("DB_SOURCE")
+	// if dbSource == "" {
+	// 	log.Fatal("DB_SOURCE is not set")
+	// }
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
 	}
 
 	// Connect to PostgreSQL
-	conn, err := pgxpool.New(context.Background(), dbSource)
+	conn, err := pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to database:", err)
 	}
@@ -40,9 +43,9 @@ func main() {
 	server := api.NewServer(store)
 
 	// Start server
-	log.Printf("starting server at %s\n", serverAddress)
+	log.Printf("starting server at %s\n", config.ServerAddress)
 
-	err = server.Start(serverAddress)
+	err = server.Start(config.ServerAddress)
 	if err != nil {
 		log.Fatal("cannot start server:", err)
 	}
