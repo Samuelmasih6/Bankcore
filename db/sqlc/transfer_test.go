@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"Bankcore/util"
+	"github.com/Samuelmasih6/Bankcore/util"
 
 	"github.com/stretchr/testify/require"
 )
