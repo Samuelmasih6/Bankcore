@@ -8,7 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"Bankcore/util"
+	"github.com/Samuelmasih6/Bankcore/util"
 
 	"github.com/stretchr/testify/require"
 )
