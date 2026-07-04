@@ -7,6 +7,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+type Store interface {
+	Querier
+	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+}
+
 // SQLStore provides access to all queries and transactions.
 //
 // db      -> connection pool to PostgreSQL
@@ -20,7 +25,7 @@ type SQLStore struct {
 //
 // The Queries field is initialized with the connection pool,
 // allowing all generated sqlc methods to be called directly.
-func NewStore(db *pgxpool.Pool) *SQLStore {
+func NewStore(db *pgxpool.Pool) Store {
 	return &SQLStore{
 		db:      db,
 		Queries: New(db),
