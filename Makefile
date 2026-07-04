@@ -27,5 +27,7 @@ test:
 server:
 	go run main.go
 
+mockdb:
+	mockgen -package mockdb -destination db/mock/store.go github.com/Samuelmasih6/Bankcore/db/sqlc Store
 .PHONY:
-	createdb dropdb postges migrateup migratedown sqlc server
+	createdb dropdb postges migrateup migratedown sqlc server mockdb
