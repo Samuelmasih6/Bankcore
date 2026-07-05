@@ -18,6 +18,12 @@ migrateup:
 migratedown:
 	migrate -path ./db/migration -database "postgresql://root:secretpass@localhost:5432/bankcore?sslmode=disable" -verbose down
 
+migrateup1:
+	migrate -path ./db/migration -database "postgresql://root:secretpass@localhost:5432/bankcore?sslmode=disable" -verbose up 1
+
+migratedown1:
+	migrate -path ./db/migration -database "postgresql://root:secretpass@localhost:5432/bankcore?sslmode=disable" -verbose down 1
+
 sqlc:
 	sqlc generate
 
@@ -29,5 +35,6 @@ server:
 
 mockdb:
 	mockgen -package mockdb -destination db/mock/store.go github.com/Samuelmasih6/Bankcore/db/sqlc Store
+
 .PHONY:
-	createdb dropdb postges migrateup migratedown sqlc server mockdb
+	createdb dropdb postges migrateup migratedown migrateup1 migratedown1 sqlc server mockdb
