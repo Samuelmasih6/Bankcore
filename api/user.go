@@ -7,16 +7,11 @@ import (
 
 	db "github.com/Samuelmasih6/Bankcore/db/sqlc"
 	"github.com/Samuelmasih6/Bankcore/token"
+	"github.com/Samuelmasih6/Bankcore/util"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/lib/pq"
-
-	//"github.com/google/uuid"
-
-	//"github.com/Samuelmasih6/Bankcore/token"
-	"github.com/Samuelmasih6/Bankcore/util"
 )
 
 type createUserRequest struct {
@@ -26,17 +21,16 @@ type createUserRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 }
 
-type createUserResponse struct {
+type userResponse struct {
 	Username          string             `json:"username"`
-	HashedPassword    string             `json:"hashed_password"`
 	FullName          string             `json:"full_name"`
 	Email             string             `json:"email"`
 	PasswordChangedAt pgtype.Timestamptz `json:"password_changed_at"`
 	CreatedAt         pgtype.Timestamptz `json:"created_at"`
 }
 
-func newUserResponse(user db.User) createUserResponse {
-	return createUserResponse{
+func newUserResponse(user db.User) userResponse {
+	return userResponse{
 		Username:          user.Username,
 		FullName:          user.FullName,
 		Email:             user.Email,
@@ -88,12 +82,12 @@ type loginUserRequest struct {
 }
 
 type loginUserResponse struct {
-	SessionID             uuid.UUID          `json:"session_id"`
-	AccessToken           string             `json:"access_token"`
-	AccessTokenExpiresAt  time.Time          `json:"access_token_expires_at"`
-	RefreshToken          string             `json:"refresh_token"`
-	RefreshTokenExpiresAt time.Time          `json:"refresh_token_expires_at"`
-	User                  createUserResponse `json:"user"`
+	//SessionID             uuid.UUID    `json:"session_id"`
+	AccessToken          string    `json:"access_token"`
+	AccessTokenExpiresAt time.Time `json:"access_token_expires_at"`
+	// RefreshToken          string       `json:"refresh_token"`
+	// RefreshTokenExpiresAt time.Time    `json:"refresh_token_expires_at"`
+	User userResponse `json:"user"`
 }
 
 func (server *Server) loginUser(ctx *gin.Context) {
@@ -121,7 +115,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 
 	accessToken, accessPayload, err := server.tokenMaker.CreateToken(
 		user.Username,
-		user.Role,
+		"depositor",
 		server.config.AccessTokenDuration,
 		token.TokenTypeAccessToken,
 	)
@@ -132,7 +126,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 
 	// refreshToken, refreshPayload, err := server.tokenMaker.CreateToken(
 	// 	user.Username,
-	// 	user.Role,
+	// 	"depositor",
 	// 	server.config.RefreshTokenDuration,
 	// 	token.TokenTypeRefreshToken,
 	// )
@@ -150,17 +144,17 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	// 	IsBlocked:    false,
 	// 	ExpiresAt:    refreshPayload.ExpiredAt,
 	// })
-	// 	if err != nil {
-	// 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	// 		return
-	// 	}
+	// if err != nil {
+	// 	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	// 	return
+	// }
 
 	rsp := loginUserResponse{
-		//SessionID:             session.ID,
+		// SessionID:             session.ID,
 		AccessToken:          accessToken,
 		AccessTokenExpiresAt: accessPayload.ExpiredAt,
-		//RefreshToken:          refreshToken,
-		//RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
+		// RefreshToken:          refreshToken,
+		// RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
 		User: newUserResponse(user),
 	}
 	ctx.JSON(http.StatusOK, rsp)
