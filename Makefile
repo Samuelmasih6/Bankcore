@@ -8,7 +8,7 @@ dropdb:
 	docker exec -it postgres12 dropdb --username=root --owner=root bankcore
 
 migrateup:
-	migrate -path ./db/migration -database "postgresql://root:7kIcH8bCULEMG639mGV0@bank-database.c7g0c6qckd60.eu-north-1.rds.amazonaws.com:5432/bankcore" -verbose up
+	migrate -path ./db/migration -database "postgresql://root:secretpass@localhost:5432/bankcore?sslmode=disable" -verbose up
 
 migratedown:
 	migrate -path ./db/migration -database "postgresql://root:secretpass@localhost:5432/bankcore?sslmode=disable" -verbose down
